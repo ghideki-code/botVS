@@ -13,8 +13,9 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 const port = Number(process.env.PORT || 8787);
-const model = process.env.GROQ_MODEL || 'qwen/qwen3-32b';
-const fallbackModel = process.env.GROQ_FALLBACK_MODEL || 'qwen/qwen3.6-27b';
+const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const fallbackModel = process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant';
+const emergencyModel = 'llama-3.3-70b-versatile';
 const inferenceUrl = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const root = __dirname;
 const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8' };
@@ -81,9 +82,14 @@ async function analyzeWithQwen(data) {
   try {
     return await requestQwen(model, data);
   } catch (error) {
-    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json/i.test(error.message);
-    if (!canTryFallback || model === fallbackModel) throw error;
-    return await requestQwen(fallbackModel, data);
+    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access/i.test(error.message);
+    if (!canTryFallback || model === emergencyModel) throw error;
+    try {
+      return await requestQwen(fallbackModel, data);
+    } catch (fallbackError) {
+      if (fallbackModel === emergencyModel) throw fallbackError;
+      return await requestQwen(emergencyModel, data);
+    }
   }
 }
 
