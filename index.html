@@ -824,9 +824,9 @@ try{ const pv=localStorage.getItem('ib_proxy'); if(pv!==null) GATE_PROXY=pv; }ca
 const SOURCES = {
   binance:{
     tfMap:{'1m':'1m','5m':'5m','15m':'15m','1h':'1h','4h':'4h','1d':'1d','1w':'1w','1M':'1M'},
-    async rest(tf, symbol='BTCUSDT'){
+    async rest(tf, symbol='BTCUSDT', signal){
       const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${this.tfMap[tf]}&limit=1000`;
-      const r = await fetch(url); if(!r.ok) throw new Error('http '+r.status);
+      const r = await fetch(url,{signal}); if(!r.ok) throw new Error('http '+r.status);
       const d = await r.json();
       return d.map(k=>({time:k[0]/1000, open:+k[1], high:+k[2], low:+k[3], close:+k[4], volume:+k[5]}));
     },
@@ -843,10 +843,10 @@ const SOURCES = {
     tfMap:{'1m':'1m','5m':'5m','15m':'15m','1h':'1h','4h':'4h','1d':'1d','1w':'1w','1M':'1M'},
     coin(sym){ return (sym||'BTCUSDT').replace(/USDT$/,'').replace(/USD$/,''); },
     perMs:{'1m':60000,'5m':300000,'15m':900000,'1h':3600000,'4h':14400000,'1d':86400000,'1w':604800000,'1M':2592000000},
-    async rest(tf, symbol='BTCUSDT'){
+    async rest(tf, symbol='BTCUSDT', signal){
       const now=Date.now(), per=this.perMs[tf]||3600000, start=now-per*1000;
       const r=await fetch('https://api.hyperliquid.xyz/info',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'candleSnapshot',req:{coin:this.coin(symbol),interval:this.tfMap[tf],startTime:start,endTime:now}})});
+        body:JSON.stringify({type:'candleSnapshot',req:{coin:this.coin(symbol),interval:this.tfMap[tf],startTime:start,endTime:now}}),signal});
       if(!r.ok) throw new Error('http '+r.status);
       const d=await r.json(); if(!Array.isArray(d)||!d.length) throw new Error('sem dados na Hyperliquid p/ '+this.coin(symbol));
       return d.map(k=>({time:Math.floor(k.t/1000), open:+k.o, high:+k.h, low:+k.l, close:+k.c, volume:+k.v}));
@@ -865,9 +865,9 @@ const SOURCES = {
   },
   bybit:{
     tfMap:{'1m':'1','5m':'5','15m':'15','1h':'60','4h':'240','1d':'D','1w':'W','1M':'M'},
-    async rest(tf, symbol='BTCUSDT'){
+    async rest(tf, symbol='BTCUSDT', signal){
       const url = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${symbol}&interval=${this.tfMap[tf]}&limit=1000`;
-      const r = await fetch(url); if(!r.ok) throw new Error('http '+r.status);
+      const r = await fetch(url,{signal}); if(!r.ok) throw new Error('http '+r.status);
       const j = await r.json();
       const list = (j.result&&j.result.list)||[];
       return list.map(k=>({time:+k[0]/1000, open:+k[1], high:+k[2], low:+k[3], close:+k[4], volume:+k[5]})).reverse();
@@ -894,13 +894,14 @@ const SOURCES = {
       const api = `https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=${symbol}&interval=${this.tfMap[tf]}&limit=${limit}`;
       return GATE_PROXY ? GATE_PROXY + encodeURIComponent(api) : api;
     },
-    async _get(url){
-      const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(), 9000);
+    async _get(url, signal){
+      const ctrl=new AbortController(), abort=()=>ctrl.abort(), t=setTimeout(abort, 9000);
+      if(signal){ if(signal.aborted) abort(); else signal.addEventListener('abort',abort,{once:true}); }
       try{ const r=await fetch(url,{signal:ctrl.signal}); if(!r.ok) throw new Error('http '+r.status); return await r.json(); }
-      finally{ clearTimeout(t); }
+      finally{ clearTimeout(t); if(signal) signal.removeEventListener('abort',abort); }
     },
     map(k){ return {time:+k[0], open:+k[5], high:+k[3], low:+k[4], close:+k[2], volume:+k[6]}; }, // [t,volQ,close,high,low,open,volB,fechado]
-    async rest(tf, symbol){ return (await this._get(this._url(tf,symbol,500))).map(k=>this.map(k)); },
+    async rest(tf, symbol, signal){ return (await this._get(this._url(tf,symbol,500),signal)).map(k=>this.map(k)); },
     ws(tf, onCandle, symbol){   // "socket" que na verdade faz polling do último candle
       let stop=false;
       const poll=async()=>{
