@@ -60,7 +60,8 @@ async function requestQwen(modelName, data) {
   });
   const payload = await response.json();
   if (!response.ok) throw new Error(payload.error?.message || payload.error || 'O Groq recusou a análise.');
-  const text = payload.choices?.[0]?.message?.content;
+  const message = payload.choices?.[0]?.message;
+  const text = message?.content || message?.reasoning;
   if (!text) throw new Error('O Qwen não retornou um parecer legível.');
   const result = parseModelJson(text);
   const numericFields = ['entry_low', 'entry_high', 'stop_loss', 'take_profit', 'risk_reward'];
@@ -81,7 +82,7 @@ async function analyzeWithQwen(data) {
   try {
     return await requestQwen(model, data);
   } catch (error) {
-    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access/i.test(error.message);
+    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível/i.test(error.message);
     if (!canTryFallback) throw error;
     try {
       return await requestQwen(fallbackModel, data);
