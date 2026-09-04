@@ -13,9 +13,9 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 const port = Number(process.env.PORT || 8787);
-const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const model = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const fallbackModel = process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant';
-const emergencyModel = 'llama-3.3-70b-versatile';
+const emergencyModel = 'openai/gpt-oss-20b';
 const inferenceUrl = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const root = __dirname;
 const contentTypes = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8' };
@@ -83,7 +83,7 @@ async function analyzeWithQwen(data) {
     return await requestQwen(model, data);
   } catch (error) {
     const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access/i.test(error.message);
-    if (!canTryFallback || model === emergencyModel) throw error;
+    if (!canTryFallback) throw error;
     try {
       return await requestQwen(fallbackModel, data);
     } catch (fallbackError) {
