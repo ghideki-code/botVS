@@ -51,6 +51,7 @@ function parseModelJson(text) {
 async function requestQwen(modelName, data) {
   const body = { model: modelName, messages: [{ role: 'user', content: buildPrompt(data) }], temperature: 0.2, max_tokens: 900 };
   if (modelName === 'qwen/qwen3.6-27b') body.reasoning_effort = 'none';
+  if (modelName === 'llama-3.1-8b-instant') body.response_format = { type: 'json_object' };
   if (!process.env.GROQ_API_KEY) {
     throw new Error('GROQ_API_KEY não configurada. Crie uma chave gratuita no Groq.');
   }
@@ -84,7 +85,7 @@ async function analyzeWithQwen(data) {
   try {
     return await requestQwen(model, data);
   } catch (error) {
-    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível/i.test(error.message);
+    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível|JSON de análise válido/i.test(error.message);
     if (!canTryFallback) throw error;
     try {
       return await requestQwen(fallbackModel, data);
