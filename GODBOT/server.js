@@ -49,7 +49,6 @@ function parseModelJson(text) {
 async function requestQwen(modelName, data) {
   const body = { model: modelName, messages: [{ role: 'user', content: buildPrompt(data) }], temperature: 0.2, max_tokens: 900 };
   if (modelName === 'qwen/qwen3.6-27b') body.reasoning_effort = 'none';
-  if (modelName !== 'qwen/qwen3.6-27b') body.response_format = { type: 'json_object' };
   if (!process.env.GROQ_API_KEY) {
     throw new Error('GROQ_API_KEY não configurada. Crie uma chave gratuita no Groq.');
   }
