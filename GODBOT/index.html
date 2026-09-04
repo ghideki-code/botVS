@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel de confluência quantitativa do The God Protocol.">
+  <title>GOD PROTOCOL / Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="God Protocol início">
+        <span class="brand-mark">G/</span>
+        <span><strong>GOD</strong> PROTOCOL <small>v2026.4</small></span>
+      </a>
+      <div class="market-status"><span class="status-dot"></span> LIVE MARKET DATA <span class="status-time" id="clock">--:--:-- UTC</span></div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Notificações" title="Notificações"><span class="notification-dot"></span>⌁</button>
+        <button class="avatar" aria-label="Abrir perfil">QT</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <div>
+          <p class="eyebrow">Workspace</p>
+          <nav class="main-nav" aria-label="Navegação principal">
+            <a class="nav-link active" href="#overview"><span class="nav-icon">◈</span> Overview</a>
+            <a class="nav-link" href="#signals"><span class="nav-icon">⌁</span> Signal scanner <span class="nav-count">03</span></a>
+            <a class="nav-link" href="#assets"><span class="nav-icon">▦</span> Asset matrix</a>
+            <a class="nav-link" href="#risk"><span class="nav-icon">◒</span> Risk monitor</a>
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="system-card">
+            <div class="system-heading"><span class="status-dot"></span><span>Engine online</span><span class="pulse"></span></div>
+            <p>Dados reais + IA híbrida</p>
+            <div class="system-progress"><span></span></div>
+            <small>Latência média <strong>84ms</strong></small>
+          </div>
+          <a class="nav-link" href="#settings"><span class="nav-icon">⚙</span> Configurações</a>
+          <p class="side-note">A ferramenta filtra o ruído.<br>Você decide a execução.</p>
+        </div>
+      </aside>
+
+      <main class="main-content" id="overview">
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow" id="analysis-time">Análise ao vivo / --:-- UTC</p>
+            <h1>Confluência em movimento<span class="accent">.</span></h1>
+            <p class="lede">O mercado está em modo seletivo. Três setups atravessaram o filtro quantitativo.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="secondary-button" id="refresh-button"><span>↻</span> Atualizar análise</button>
+            <div class="mode-switch" role="group" aria-label="Modo de visualização">
+              <button class="mode-button active" data-mode="live">LIVE</button>
+              <button class="mode-button" data-mode="replay">REPLAY</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Resumo do sistema">
+          <article class="metric-card primary-metric">
+            <div class="metric-top"><span>Market regime / <strong id="regime-asset">BTC/USDT</strong></span><span class="mini-label" id="regime-alignment">MTF aligned</span></div>
+            <div class="metric-main"><strong id="regime-value">ACCUMULATION</strong><span class="regime-icon" id="regime-icon">↗</span></div>
+            <div class="regime-timeframes"><span><b id="ltf-label">LTF / 1m</b><strong id="ltf-regime">ACCUMULATION</strong></span><span><b id="mtf-label">MTF / 5m</b><strong id="mtf-regime">ACCUMULATION</strong></span><span><b id="htf-label">HTF / 15m</b><strong id="htf-regime">ACCUMULATION</strong></span></div>
+            <div class="metric-bottom"><span class="positive" id="regime-change">+0.00%</span> variação / 24h</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Confluência média</span><span class="info">i</span></div>
+            <div class="metric-main"><strong>78.4</strong><span class="metric-unit">/ 100</span></div>
+            <div class="meter"><span style="width: 78.4%"></span></div>
+            <div class="metric-bottom"><span>+4.2%</span> vs. sessão anterior</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Setups qualificados</span><span class="info">i</span></div>
+            <div class="metric-main"><strong>03</strong><span class="metric-unit">ativos</span></div>
+            <div class="metric-bottom"><span class="positive">2 long</span><span class="divider">/</span><span class="negative">1 short</span></div>
+          </article>
+          <article class="metric-card risk-metric">
+            <div class="metric-top"><span>Risco da carteira</span><span class="shield">◇</span></div>
+            <div class="metric-main"><strong>1.2</strong><span class="metric-unit">%</span></div>
+            <div class="metric-bottom"><span class="positive">Dentro do limite</span> / máx. 2.0%</div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid" id="signals">
+          <article class="panel signal-panel">
+            <div class="panel-header">
+              <div><p class="eyebrow">Priority queue / <span id="trade-mode-label">SCALP</span></p><h2>Signal scanner</h2></div>
+              <button class="text-button">Ver todos <span>→</span></button>
+            </div>
+            <div class="trade-modes" role="group" aria-label="Tipo de sinal">
+              <button class="trade-mode active" data-mode="scalp">SCALP</button>
+              <button class="trade-mode" data-mode="day">DAY TRADE</button>
+              <button class="trade-mode" data-mode="swing">SWING TRADE</button>
+              <button class="trade-mode" data-mode="position">POSITION TRADE</button>
+            </div>
+            <div class="signal-list">
+              <button class="signal-row selected" data-asset="BTC/USDT" data-symbol="BTCUSDT" data-asset-name="Bitcoin">
+                <span class="rank">01</span><span class="coin-icon btc">₿</span>
+                <span class="asset-name"><strong>BTC/USDT</strong><small>Bitcoin / 1m / 5m</small></span>
+                <span class="direction long">LONG</span><span class="signal-score"><strong>88.4</strong><small>confluência</small></span><span class="row-arrow">→</span>
+              </button>
+              <button class="signal-row" data-asset="ETH/USDT" data-symbol="ETHUSDT" data-asset-name="Ethereum">
+                <span class="rank">02</span><span class="coin-icon eth">◆</span>
+                <span class="asset-name"><strong>ETH/USDT</strong><small>Ethereum / 1m / 5m</small></span>
+                <span class="direction long">LONG</span><span class="signal-score"><strong>82.7</strong><small>confluência</small></span><span class="row-arrow">→</span>
+              </button>
+              <button class="signal-row" data-asset="SOL/USDT" data-symbol="SOLUSDT" data-asset-name="Solana">
+                <span class="rank">03</span><span class="coin-icon sol">≋</span>
+                <span class="asset-name"><strong>SOL/USDT</strong><small>Solana / 1m / 5m</small></span>
+                <span class="direction long">LONG</span><span class="signal-score"><strong>86.1</strong><small>confluência</small></span><span class="row-arrow">→</span>
+              </button>
+            </div>
+            <div class="queue-footer"><span class="queue-dot"></span> Próxima atualização em <strong id="refresh-countdown">15s</strong><span class="queue-rule"></span><span>Filtro: score &gt; 80</span></div>
+          </article>
+
+          <article class="panel confluence-panel" id="assets">
+            <div class="panel-header">
+              <div><p class="eyebrow">Selected asset</p><h2 id="selected-asset">BTC/USDT <span class="live-pill">LIVE</span></h2></div>
+              <button class="dots-button" aria-label="Mais opções">···</button>
+            </div>
+            <div class="asset-price"><strong id="asset-price">Carregando...</strong><span id="asset-change">Buscando cotação em tempo real</span></div>
+            <div class="chart-wrap" aria-label="Gráfico simulado de preço BTC/USDT"><div class="chart-axis"><span>110k</span><span>109k</span><span>108k</span><span>107k</span></div><svg class="chart" viewBox="0 0 620 190" preserveAspectRatio="none" role="img" aria-label="Preço ascendente com zonas de liquidez"><defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#a9e76f" stop-opacity=".28"/><stop offset="1" stop-color="#a9e76f" stop-opacity="0"/></linearGradient></defs><path class="grid-line" d="M0 28H620M0 82H620M0 136H620"/><path class="area" d="M0 156 L28 144 L52 151 L76 130 L99 138 L125 113 L152 121 L177 95 L202 104 L228 79 L253 88 L278 70 L301 91 L328 75 L355 89 L379 52 L405 64 L432 42 L460 56 L485 32 L510 47 L535 22 L560 35 L590 12 L620 24 L620 190 L0 190Z"/><path class="line" d="M0 156 L28 144 L52 151 L76 130 L99 138 L125 113 L152 121 L177 95 L202 104 L228 79 L253 88 L278 70 L301 91 L328 75 L355 89 L379 52 L405 64 L432 42 L460 56 L485 32 L510 47 L535 22 L560 35 L590 12 L620 24"/><circle cx="590" cy="12" r="5" class="current-point"/></svg><div class="chart-tag">LIQUIDITY SWEEP</div></div>
+            <div class="time-tabs"><button class="active">15m</button><button>1h</button><button>4h</button><button>1D</button></div>
+          </article>
+        </section>
+
+        <section class="divergence-card" id="divergence-card" hidden>
+          <div class="divergence-icon">⌁</div>
+          <div class="divergence-content"><p class="eyebrow">Momentum alert / price vs. RSI</p><h2 id="divergence-title">Divergência detectada</h2><p id="divergence-summary">A IA encontrou uma divergência relevante.</p></div>
+          <div class="divergence-meta"><span id="divergence-type">BULLISH</span><small id="divergence-timeframe">LTF</small></div>
+        </section>
+
+        <section class="bottom-grid" id="risk">
+          <article class="panel pillars-panel">
+            <div class="panel-header"><div><p class="eyebrow">Decision engine / 04 pillars</p><h2>Confluence matrix</h2></div><span class="score-badge"><span id="score-value">92.8</span> <small>/ 100</small></span></div>
+            <div class="pillar-list">
+              <div class="pillar-row"><span class="pillar-number">01</span><span class="pillar-symbol">◫</span><span class="pillar-label"><strong>Technical structure</strong><small>EMA 20/50 cross · RSI 58.4</small></span><span class="pillar-result pass">PASS</span><span class="pillar-score">24/25</span></div>
+              <div class="pillar-row"><span class="pillar-number">02</span><span class="pillar-symbol">⌁</span><span class="pillar-label"><strong>Smart money / liquidity</strong><small>Order block confirmed · sweep detected</small></span><span class="pillar-result pass">PASS</span><span class="pillar-score">25/25</span></div>
+              <div class="pillar-row"><span class="pillar-number">03</span><span class="pillar-symbol">◒</span><span class="pillar-label"><strong>Wyckoff phase</strong><small>Accumulation · spring event</small></span><span class="pillar-result pass">PASS</span><span class="pillar-score">23/25</span></div>
+              <div class="pillar-row"><span class="pillar-number">04</span><span class="pillar-symbol">◎</span><span class="pillar-label"><strong>Futures sentiment</strong><small>Funding neutral · OI expanding</small></span><span class="pillar-result watch">WATCH</span><span class="pillar-score">20/25</span></div>
+            </div>
+            <div class="ai-analysis" id="ai-analysis">
+              <div class="ai-analysis-header"><span><span class="ai-spark">✦</span> AI confluence analyst</span><span class="ai-state" id="ai-state">OFFLINE</span></div>
+              <div class="ai-signal-alert" id="ai-signal-alert" aria-live="polite"><span class="signal-beacon">●</span><div><strong id="ai-signal-title">Nenhum sinal gerado</strong><small id="ai-signal-meta">Aguardando análise das confluências</small></div><span class="signal-arrow">↗</span></div>
+              <p id="ai-summary">Conecte o servidor de análise para receber um parecer sobre os quatro pilares e as camadas LTF, MTF e HTF.</p>
+              <div class="ai-details" id="ai-details"></div>
+              <button class="ai-button" id="ai-button">Analisar confluências <span>↗</span></button>
+            </div>
+          </article>
+          <article class="panel risk-panel">
+            <div class="panel-header"><div><p class="eyebrow">Execution protocol / <span id="risk-mode-label">SCALP</span></p><h2>Risk gate</h2></div><span class="lock-icon">⌑</span></div>
+            <div class="risk-layout"><div class="risk-ring" id="risk-ring"><div><strong id="ai-risk-level">--</strong><small>AI risk level</small></div></div><div class="risk-stats"><div><span>Entry zone <i id="entry-source">RULES</i></span><strong id="entry-zone">Calculando...</strong></div><div><span>Stop loss</span><strong class="negative" id="stop-loss">Calculando...</strong></div><div><span>Take profit</span><strong class="positive" id="take-profit">Calculando...</strong></div></div></div>
+            <div class="rr-bar"><span>R:R <strong id="risk-reward">1 : 3.5</strong></span><div><i></i></div><span class="positive" id="risk-status">approved</span></div>
+            <button class="execute-button" id="execute-button">Gerar protocolo <span>↗</span></button>
+          </article>
+        </section>
+        <footer class="footer"><span>GOD PROTOCOL / QUANTITATIVE HYBRID AGENT</span><span>Dados demonstrativos · Não constitui recomendação financeira</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status">Análise atualizada com sucesso.</div>
+  <script src="app.js"></script>
+</body>
+</html>

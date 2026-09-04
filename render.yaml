@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: godbot
+    runtime: node
+    rootDir: GODBOT
+    buildCommand: ""
+    startCommand: node server.js
+    plan: free
