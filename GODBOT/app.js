@@ -48,6 +48,7 @@ let secondsToRefresh = 15;
 let activeTradeMode = 'scalp';
 let latestAiRisk = null;
 let latestAiAnalysis = null;
+let analysisController = null;
 const tradeModes = {
   scalp: { label: 'SCALP', timeframe: '1m / 5m', layers: ['1m', '5m', '15m'], stop: 0.35, target: 1.05, scores: [88.4, 82.7, 86.1], directions: ['LONG', 'LONG', 'LONG'] },
   day: { label: 'DAY TRADE', timeframe: '15m / 1h', layers: ['15m', '1h', '4h'], stop: 1.38, target: 4.82, scores: [92.8, 84.1, 81.6], directions: ['LONG', 'LONG', 'SHORT'] },
@@ -197,34 +198,35 @@ function renderDivergence(result) {
 }
 
 async function analyzeConfluences() {
+  if (analysisController) analysisController.abort();
+  const controller = new AbortController();
+  analysisController = controller;
   aiButton.disabled = true;
   aiButton.innerHTML = 'Analisando confluências...';
   aiState.textContent = 'ANALYZING';
+  let attempt = 0;
   try {
-    let lastError;
-    for (let attempt = 0; attempt < 2; attempt += 1) {
+    while (!controller.signal.aborted) {
+      attempt += 1;
       try {
-        const response = await fetch('/api/ai-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildAiPayload()) });
+        const response = await fetch('/api/ai-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildAiPayload()), signal: controller.signal });
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'Falha na análise');
         renderAiAnalysis(result);
         showToast(`Sinal ${selectedDirection} detectado em ${selectedSymbol}.`);
         return;
       } catch (error) {
-        lastError = error;
-        if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 700));
+        if (error.name === 'AbortError') return;
+        aiSummary.textContent = `Tentativa ${attempt}: aguardando resposta da IA...`;
+        await new Promise((resolve) => setTimeout(resolve, Math.min(5000, 700 + attempt * 300)));
       }
     }
-    throw lastError;
-  } catch (error) {
-    aiState.textContent = 'OFFLINE';
-    aiState.classList.remove('online');
-    aiSummary.textContent = error.message.includes('Failed to fetch') ? 'Servidor de IA não encontrado. Inicie o servidor para conectar o modelo.' : error.message;
-    aiDetails.innerHTML = '';
-    showToast('A análise da IA não está disponível.');
   } finally {
-    aiButton.disabled = false;
-    aiButton.innerHTML = 'Analisar confluências <span>↗</span>';
+    if (analysisController === controller) {
+      analysisController = null;
+      aiButton.disabled = false;
+      aiButton.innerHTML = 'Analisar confluências <span>↗</span>';
+    }
   }
 }
 
