@@ -85,18 +85,21 @@ async function requestQwen(modelName, data) {
 }
 
 async function analyzeWithQwen(data) {
-  try {
-    return await requestQwen(model, data);
-  } catch (error) {
-    const canTryFallback = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível|JSON de análise válido/i.test(error.message);
-    if (!canTryFallback) throw error;
-    try {
-      return await requestQwen(fallbackModel, data);
-    } catch (fallbackError) {
-      if (fallbackModel === emergencyModel) throw fallbackError;
-      return await requestQwen(emergencyModel, data);
+  let lastError;
+  const models = [...new Set([model, fallbackModel, emergencyModel])];
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    for (const modelName of models) {
+      try {
+        return await requestQwen(modelName, data);
+      } catch (error) {
+        lastError = error;
+        const retryable = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível|JSON de análise válido/i.test(error.message);
+        if (!retryable) throw error;
+      }
     }
+    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
   }
+  throw lastError;
 }
 
 function serveFile(request, response) {

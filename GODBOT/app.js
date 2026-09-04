@@ -201,11 +201,21 @@ async function analyzeConfluences() {
   aiButton.innerHTML = 'Analisando confluências...';
   aiState.textContent = 'ANALYZING';
   try {
-    const response = await fetch('/api/ai-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildAiPayload()) });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'Falha na análise');
-    renderAiAnalysis(result);
-    showToast(`Sinal ${selectedDirection} detectado em ${selectedSymbol}.`);
+    let lastError;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const response = await fetch('/api/ai-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildAiPayload()) });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Falha na análise');
+        renderAiAnalysis(result);
+        showToast(`Sinal ${selectedDirection} detectado em ${selectedSymbol}.`);
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 700));
+      }
+    }
+    throw lastError;
   } catch (error) {
     aiState.textContent = 'OFFLINE';
     aiState.classList.remove('online');
