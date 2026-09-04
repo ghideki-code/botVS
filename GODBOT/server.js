@@ -44,8 +44,11 @@ function parseModelJson(text) {
   const cleanText = text.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```(?:json)?/gi, '').trim();
   const start = cleanText.indexOf('{');
   const end = cleanText.lastIndexOf('}');
-  if (start < 0 || end < start) throw new Error('O Qwen não retornou um JSON de análise válido.');
-  return JSON.parse(cleanText.slice(start, end + 1));
+  const candidates = start >= 0 && end >= start ? [cleanText.slice(start, end + 1)] : [];
+  for (const candidate of candidates) {
+    try { return JSON.parse(candidate); } catch {}
+  }
+  throw new Error('O Qwen não retornou um JSON de análise válido.');
 }
 
 async function requestQwen(modelName, data) {
@@ -64,7 +67,7 @@ async function requestQwen(modelName, data) {
   const payload = await response.json();
   if (!response.ok) throw new Error(payload.error?.message || payload.error || 'O Groq recusou a análise.');
   const message = payload.choices?.[0]?.message;
-  const text = message?.content || message?.reasoning;
+  const text = [message?.content, message?.reasoning].filter((value) => typeof value === 'string').join('\n');
   if (!text) throw new Error('O Qwen não retornou um parecer legível.');
   const result = parseModelJson(text);
   const numericFields = ['entry_low', 'entry_high', 'stop_loss', 'take_profit', 'risk_reward'];
