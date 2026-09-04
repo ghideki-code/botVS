@@ -13,8 +13,10 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 const port = Number(process.env.PORT || 8787);
-const model = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
-const fallbackModel = process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant';
+const configuredModel = process.env.GROQ_MODEL || 'llama-3.1-8b-instant';
+const model = configuredModel === 'qwen/qwen3-32b' || configuredModel === 'llama-3.3-70b-versatile'
+  ? 'llama-3.1-8b-instant' : configuredModel;
+const fallbackModel = process.env.GROQ_FALLBACK_MODEL || 'openai/gpt-oss-20b';
 const emergencyModel = 'openai/gpt-oss-20b';
 const inferenceUrl = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const root = __dirname;
@@ -39,7 +41,7 @@ function buildPrompt(data) {
 }
 
 function parseModelJson(text) {
-  const cleanText = text.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^```json\s*|\s*```$/g, '').trim();
+  const cleanText = text.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```(?:json)?/gi, '').trim();
   const start = cleanText.indexOf('{');
   const end = cleanText.lastIndexOf('}');
   if (start < 0 || end < start) throw new Error('O Qwen não retornou um JSON de análise válido.');
