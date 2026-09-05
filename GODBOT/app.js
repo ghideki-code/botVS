@@ -44,6 +44,7 @@ const aiDetails = document.querySelector('#ai-details');
 const aiSignalAlert = document.querySelector('#ai-signal-alert');
 const aiSignalTitle = document.querySelector('#ai-signal-title');
 const aiSignalMeta = document.querySelector('#ai-signal-meta');
+const themeButton = document.querySelector('#theme-button');
 const priceApi = 'https://fapi.binance.com/fapi/v1/ticker/24hr';
 const marketPrices = new Map();
 let selectedSymbol = 'BTCUSDT';
@@ -61,6 +62,21 @@ const tradeModes = {
   swing: { label: 'SWING TRADE', timeframe: '4h / 1D', layers: ['1h', '4h', '1D'], stop: 2.4, target: 7.2, scores: [89.6, 87.4, 83.2], directions: ['LONG', 'LONG', 'LONG'] },
   position: { label: 'POSITION TRADE', timeframe: '1D / 1W', layers: ['4h', '1D', '1W'], stop: 4.0, target: 12.0, scores: [86.2, 91.3, 79.8], directions: ['LONG', 'LONG', 'SHORT'] }
 };
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const dark = theme === 'dark';
+  themeButton.textContent = dark ? '☀' : '☾';
+  themeButton.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo escuro');
+  themeButton.title = dark ? 'Ativar modo claro' : 'Ativar modo escuro';
+}
+
+applyTheme(localStorage.getItem('godbot-theme') || 'light');
+themeButton.addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('godbot-theme', theme);
+  applyTheme(theme);
+});
 
 function updateClock() {
   const now = new Date();
