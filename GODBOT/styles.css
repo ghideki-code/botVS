@@ -88,7 +88,6 @@ a { color: inherit; text-decoration: none; }
 :root[data-theme="dark"] .icon-button { color: #aab9ae; }
 
 .theme-button { background: transparent; border: 1px solid #566258; color: #d9e1d8; font-size: 16px; height: 30px; width: 34px; }
-:root[data-theme="light"] .risk-ring::before { background: #f4f5ef; }
 :root[data-theme="dark"] .risk-ring::before { background: #101412; }
 .trade-modes { background: #d9ded7; display: flex; gap: 3px; margin: 16px 0 2px; overflow-x: auto; padding: 3px; }
 .trade-mode { background: transparent; border: 0; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: .02em; padding: 9px 10px; white-space: nowrap; }
