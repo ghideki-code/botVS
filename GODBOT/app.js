@@ -16,6 +16,10 @@ const riskStatus = document.querySelector('#risk-status');
 const entrySource = document.querySelector('#entry-source');
 const aiRiskLevel = document.querySelector('#ai-risk-level');
 const riskRing = document.querySelector('#risk-ring');
+const chartAxis = document.querySelector('#chart-axis');
+const chartArea = document.querySelector('#chart-area');
+const chartLine = document.querySelector('#chart-line');
+const chartPoint = document.querySelector('#chart-point');
 const divergenceCard = document.querySelector('#divergence-card');
 const divergenceTitle = document.querySelector('#divergence-title');
 const divergenceSummary = document.querySelector('#divergence-summary');
@@ -49,6 +53,8 @@ let activeTradeMode = 'scalp';
 let latestAiRisk = null;
 let latestAiAnalysis = null;
 let analysisController = null;
+let chartRequest = 0;
+let chartInterval = '15m';
 const tradeModes = {
   scalp: { label: 'SCALP', timeframe: '1m / 5m', layers: ['1m', '5m', '15m'], stop: 0.35, target: 1.05, scores: [88.4, 82.7, 86.1], directions: ['LONG', 'LONG', 'LONG'] },
   day: { label: 'DAY TRADE', timeframe: '15m / 1h', layers: ['15m', '1h', '4h'], stop: 1.38, target: 4.82, scores: [92.8, 84.1, 81.6], directions: ['LONG', 'LONG', 'SHORT'] },
@@ -272,8 +278,38 @@ function renderPrice(symbol) {
   assetPrice.textContent = formatPrice(Number(ticker.lastPrice));
   assetChange.className = change >= 0 ? 'positive' : 'negative';
   assetChange.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}% / 24h`;
+  loadChart(symbol, chartInterval).catch(() => {
+    if (symbol === selectedSymbol) showToast('Não foi possível atualizar o gráfico.');
+  });
   renderMarketRegime(symbol);
   if (!latestAiRisk) renderRiskProtocol(symbol);
+}
+
+async function loadChart(symbol = selectedSymbol, interval = chartInterval) {
+  const requestId = ++chartRequest;
+  const response = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=80`);
+  if (!response.ok) throw new Error(`Chart API returned ${response.status}`);
+  const candles = await response.json();
+  if (requestId !== chartRequest || !candles.length) return;
+  const closes = candles.map((candle) => Number(candle[4]));
+  const min = Math.min(...closes);
+  const max = Math.max(...closes);
+  const range = max - min || max * 0.01 || 1;
+  const points = closes.map((close, index) => {
+    const x = (index / (closes.length - 1)) * 620;
+    const y = 170 - ((close - min) / range) * 150;
+    return [x, y];
+  });
+  const line = points.map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
+  const area = `${line} L620 190 L0 190Z`;
+  chartLine.setAttribute('d', line);
+  chartArea.setAttribute('d', area);
+  const [lastX, lastY] = points[points.length - 1];
+  chartPoint.setAttribute('cx', lastX.toFixed(1));
+  chartPoint.setAttribute('cy', lastY.toFixed(1));
+  chartAxis.querySelectorAll('span').forEach((label, index) => {
+    label.textContent = formatPrice(max - (range * index) / 3).replace('$', '');
+  });
 }
 
 async function fetchMarketPrices() {
@@ -363,6 +399,8 @@ document.querySelectorAll('.time-tabs button').forEach((button) => {
   button.addEventListener('click', () => {
     document.querySelectorAll('.time-tabs button').forEach((item) => item.classList.remove('active'));
     button.classList.add('active');
+    chartInterval = button.dataset.interval;
+    loadChart(selectedSymbol, chartInterval).catch(() => showToast('Não foi possível atualizar o gráfico.'));
     showToast(`Timeframe ${button.textContent} selecionado.`);
   });
 });
