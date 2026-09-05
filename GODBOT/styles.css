@@ -1,6 +1,7 @@
 * { box-sizing: border-box; }
 :root {
   --ink: #151817;
+  --header-bg: #151817;
   --muted: #7b817b;
   --soft: #aeb5ac;
   --paper: #f4f5ef;
@@ -15,6 +16,7 @@
 }
 :root[data-theme="dark"] {
   --ink: #e8eee7;
+  --header-bg: #080d0c;
   --muted: #9aa69b;
   --soft: #748077;
   --paper: #101412;
@@ -27,7 +29,7 @@ button, a { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 .app-shell { min-height: 100vh; }
-.topbar { align-items: center; background: var(--ink); color: white; display: flex; height: 68px; justify-content: space-between; padding: 0 34px; }
+.topbar { align-items: center; background: var(--header-bg); color: white; display: flex; height: 68px; justify-content: space-between; padding: 0 34px; }
 .brand { align-items: center; display: flex; font-family: var(--mono); font-size: 12px; gap: 12px; letter-spacing: .05em; }
 .brand strong { color: var(--green); font-weight: 500; }.brand small { color: #858b84; font-size: 9px; margin-left: 8px; }
 .brand-mark { align-items: center; border: 1px solid var(--green); color: var(--green); display: flex; font-size: 14px; height: 30px; justify-content: center; width: 34px; }
@@ -80,7 +82,7 @@ a { color: inherit; text-decoration: none; }
 :root[data-theme="dark"] .rr-bar div { background: #33443a; }
 :root[data-theme="dark"] .primary-metric .metric-top,
 :root[data-theme="dark"] .risk-panel .eyebrow { color: #9caea1; }
-:root[data-theme="dark"] .topbar { background: #080d0c; color: #dce6df; }
+:root[data-theme="dark"] .topbar { color: #dce6df; }
 :root[data-theme="dark"] .market-status { color: #7f9186; }
 :root[data-theme="dark"] .status-time { color: #b7c7bb; }
 :root[data-theme="dark"] .icon-button { color: #aab9ae; }
