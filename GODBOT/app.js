@@ -8,6 +8,7 @@ const assetPrice = document.querySelector('#asset-price');
 const assetChange = document.querySelector('#asset-change');
 const analysisTime = document.querySelector('#analysis-time');
 const refreshCountdown = document.querySelector('#refresh-countdown');
+const refreshInterval = document.querySelector('#refresh-interval');
 const entryZone = document.querySelector('#entry-zone');
 const stopLoss = document.querySelector('#stop-loss');
 const takeProfit = document.querySelector('#take-profit');
@@ -49,7 +50,8 @@ const priceApi = 'https://fapi.binance.com/fapi/v1/ticker/24hr';
 const marketPrices = new Map();
 let selectedSymbol = 'BTCUSDT';
 let selectedDirection = 'LONG';
-let secondsToRefresh = 15;
+let refreshIntervalSeconds = Number(window.localStorage.getItem('godbot-refresh-interval')) || 15;
+let secondsToRefresh = refreshIntervalSeconds;
 let activeTradeMode = 'scalp';
 let latestAiRisk = null;
 let latestAiAnalysis = null;
@@ -421,6 +423,15 @@ document.querySelectorAll('.time-tabs button').forEach((button) => {
   });
 });
 
+refreshInterval.value = String(refreshIntervalSeconds);
+refreshInterval.addEventListener('change', () => {
+  refreshIntervalSeconds = Number(refreshInterval.value);
+  secondsToRefresh = refreshIntervalSeconds;
+  window.localStorage.setItem('godbot-refresh-interval', String(refreshIntervalSeconds));
+  refreshCountdown.textContent = `${secondsToRefresh}s`;
+  showToast(`Atualização automática a cada ${refreshIntervalSeconds}s.`);
+});
+
 refreshButton.addEventListener('click', () => {
   refreshButton.disabled = true;
   refreshButton.innerHTML = '<span>↻</span> Analisando...';
@@ -446,7 +457,7 @@ window.setInterval(() => {
   secondsToRefresh -= 1;
   refreshCountdown.textContent = `${secondsToRefresh}s`;
   if (secondsToRefresh <= 0) {
-    secondsToRefresh = 15;
+    secondsToRefresh = refreshIntervalSeconds;
     refreshMarketPrices();
   }
 }, 1000);
