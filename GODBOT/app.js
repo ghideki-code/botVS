@@ -234,7 +234,13 @@ async function analyzeConfluences() {
       attempt += 1;
       try {
         const response = await fetch('/api/ai-analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildAiPayload()), signal: controller.signal });
-        const result = await response.json();
+        const responseText = await response.text();
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Resposta inválida do servidor (${response.status}).`);
+        }
         if (!response.ok) throw new Error(result.error || 'Falha na análise');
         renderAiAnalysis(result);
         showToast(`Sinal ${selectedDirection} detectado em ${selectedSymbol}.`);
@@ -242,6 +248,7 @@ async function analyzeConfluences() {
       } catch (error) {
         if (error.name === 'AbortError') return;
         aiSummary.textContent = `Tentativa ${attempt}: aguardando resposta da IA...`;
+        aiState.textContent = `RETRY ${attempt}`;
         await new Promise((resolve) => setTimeout(resolve, Math.min(5000, 700 + attempt * 300)));
       }
     }

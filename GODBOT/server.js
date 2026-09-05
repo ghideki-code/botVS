@@ -121,8 +121,8 @@ async function analyzeWithQwen(data) {
         return await requestQwen(modelName, data);
       } catch (error) {
         lastError = error;
-        const retryable = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível|JSON de análise válido/i.test(error.message);
-        if (!retryable) throw error;
+        const retryable = /rate limit|tokens per day|TPD|níveis completos|regimes|nível de risco|failed to generate json|does not exist|do not have access|parecer legível|JSON de análise válido|JSON válido|recusou a análise|fetch/i.test(error.message);
+        if (!retryable && attempt === 2 && modelName === models[models.length - 1]) throw error;
       }
     }
     await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
