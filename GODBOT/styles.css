@@ -70,6 +70,16 @@ a { color: inherit; text-decoration: none; }
 :root[data-theme="dark"] .system-progress,
 :root[data-theme="dark"] .meter { background: #29382f; }
 :root[data-theme="dark"] .theme-button { color: var(--green); }
+:root[data-theme="dark"] .live-pill { background: #263b2a; color: #b9f27f; }
+:root[data-theme="dark"] .grid-line { stroke: #304139; }
+:root[data-theme="dark"] .chart-axis { color: #84968a; }
+:root[data-theme="dark"] .score-badge { background: #263b2a; color: #b9f27f; }
+:root[data-theme="dark"] .score-badge small { color: #91a68f; }
+:root[data-theme="dark"] .info { border-color: #526458; color: #a6b3aa; }
+:root[data-theme="dark"] .risk-ring { background: conic-gradient(var(--green) 0 180deg, #33443a 180deg 360deg); }
+:root[data-theme="dark"] .rr-bar div { background: #33443a; }
+:root[data-theme="dark"] .primary-metric .metric-top,
+:root[data-theme="dark"] .risk-panel .eyebrow { color: #9caea1; }
 .theme-button { background: transparent; border: 1px solid #566258; color: #d9e1d8; font-size: 16px; height: 30px; width: 34px; }
 .trade-modes { background: #edf0e9; display: flex; gap: 3px; margin: 16px 0 2px; overflow-x: auto; padding: 3px; }
 .trade-mode { background: transparent; border: 0; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: .02em; padding: 9px 10px; white-space: nowrap; }
