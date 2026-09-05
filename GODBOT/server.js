@@ -41,14 +41,42 @@ function buildPrompt(data) {
 }
 
 function parseModelJson(text) {
-  const cleanText = text.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```(?:json)?/gi, '').trim();
-  const start = cleanText.indexOf('{');
-  const end = cleanText.lastIndexOf('}');
-  const candidates = start >= 0 && end >= start ? [cleanText.slice(start, end + 1)] : [];
-  for (const candidate of candidates) {
-    try { return JSON.parse(candidate); } catch {}
+  const cleanText = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  const candidates = [];
+  const fencedBlocks = cleanText.match(/```(?:json)?\s*([\s\S]*?)```/gi) || [];
+  fencedBlocks.forEach((block) => candidates.push(block.replace(/```(?:json)?/gi, '').trim()));
+  let depth = 0;
+  let start = -1;
+  let quoted = false;
+  let escaped = false;
+  for (let index = 0; index < cleanText.length; index += 1) {
+    const character = cleanText[index];
+    if (quoted) {
+      if (escaped) escaped = false;
+      else if (character === '\\') escaped = true;
+      else if (character === '"') quoted = false;
+      continue;
+    }
+    if (character === '"') {
+      quoted = true;
+    } else if (character === '{') {
+      if (depth === 0) start = index;
+      depth += 1;
+    } else if (character === '}' && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && start >= 0) {
+        candidates.push(cleanText.slice(start, index + 1));
+        start = -1;
+      }
+    }
   }
-  throw new Error('O Qwen não retornou um JSON de análise válido.');
+  for (const candidate of candidates) {
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+    } catch {}
+  }
+  throw new Error('O modelo não retornou um JSON de análise válido.');
 }
 
 async function requestQwen(modelName, data) {
