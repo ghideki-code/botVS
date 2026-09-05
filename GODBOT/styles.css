@@ -88,13 +88,13 @@ a { color: inherit; text-decoration: none; }
 :root[data-theme="dark"] .icon-button { color: #aab9ae; }
 
 .theme-button { background: transparent; border: 1px solid #566258; color: #d9e1d8; font-size: 16px; height: 30px; width: 34px; }
-.trade-modes { background: #edf0e9; display: flex; gap: 3px; margin: 16px 0 2px; overflow-x: auto; padding: 3px; }
+.trade-modes { background: #d9ded7; display: flex; gap: 3px; margin: 16px 0 2px; overflow-x: auto; padding: 3px; }
 .trade-mode { background: transparent; border: 0; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: .02em; padding: 9px 10px; white-space: nowrap; }
 .trade-mode.active { background: var(--ink); color: var(--green); }
-.trade-modes .trade-mode:nth-child(1).active { background: #dcefd2; }
-.trade-modes .trade-mode:nth-child(2).active { background: #dce4f8; }
-.trade-modes .trade-mode:nth-child(3).active { background: #eadcf0; }
-.trade-modes .trade-mode:nth-child(4).active { background: #f2e1d0; }
+.trade-modes .trade-mode:nth-child(1).active { background: #c2d9b5; }
+.trade-modes .trade-mode:nth-child(2).active { background: #bfcbe8; }
+.trade-modes .trade-mode:nth-child(3).active { background: #d2bddb; }
+.trade-modes .trade-mode:nth-child(4).active { background: #dec5a9; }
 .trade-modes .trade-mode:hover { color: var(--muted); }
 .trade-modes .trade-mode.active { color: var(--green); }
 :root[data-theme="dark"] .trade-modes .trade-mode:nth-child(1).active { background: #29452d; }
@@ -103,6 +103,7 @@ a { color: inherit; text-decoration: none; }
 :root[data-theme="dark"] .trade-modes .trade-mode:nth-child(4).active { background: #4e3c2d; }
 :root[data-theme="dark"] .trade-modes .trade-mode { color: #a6b3aa; }
 :root[data-theme="dark"] .trade-modes .trade-mode.active { color: var(--green); }
+:root[data-theme="dark"] .trade-modes { background: #0e1713; }
 .divergence-card { align-items: center; background: #fff4dd; border: 1px solid #edd39e; display: flex; gap: 16px; margin-bottom: 20px; padding: 16px 20px; }.divergence-icon { align-items: center; background: #e8b95c; border-radius: 50%; color: white; display: flex; flex: 0 0 34px; font-size: 22px; height: 34px; justify-content: center; }.divergence-content { flex: 1; }.divergence-content .eyebrow { color: #a17a2e; margin-bottom: 5px; }.divergence-content h2 { color: #6f521d; font-size: 15px; margin: 0 0 5px; }.divergence-content p:last-child { color: #8a6d35; font-size: 11px; margin: 0; }.divergence-meta { display: grid; gap: 5px; text-align: right; }.divergence-meta span { color: #9c7025; font-family: var(--mono); font-size: 10px; font-weight: 500; }.divergence-meta small { color: #a98a53; font-family: var(--mono); font-size: 8px; }
 .ai-analysis { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 16px; }.ai-analysis-header { align-items: center; color: var(--ink); display: flex; font-family: var(--mono); font-size: 9px; justify-content: space-between; text-transform: uppercase; }.ai-spark { color: #6c9d50; font-size: 15px; margin-right: 6px; }.ai-state { color: var(--muted); font-size: 8px; }.ai-state.online { color: #57933e; }.ai-analysis p { color: var(--muted); font-size: 11px; line-height: 1.55; margin: 10px 0; }.ai-details { color: #687167; display: grid; font-family: var(--mono); font-size: 9px; gap: 5px; }.ai-details strong { color: var(--ink); font-weight: 500; }.ai-button { background: var(--ink); border: 0; color: var(--green); font-family: var(--mono); font-size: 9px; margin-top: 13px; padding: 11px 12px; text-align: left; width: 100%; }.ai-button:disabled { cursor: wait; opacity: .65; }.ai-button span { float: right; font-size: 14px; }
 .ai-signal-alert { align-items: center; background: #eef8e8; border-left: 3px solid #6aa34d; display: flex; gap: 10px; margin-top: 13px; opacity: .55; padding: 11px 10px; transform: translateY(0); }.ai-signal-alert.active { animation: signal-arrival .55s ease-out, signal-pulse 2.4s ease-in-out infinite; border-left-color: var(--green); box-shadow: 0 0 0 1px rgba(169, 231, 111, .3); opacity: 1; }.signal-beacon { color: #79ae58; font-size: 15px; line-height: 1; }.ai-signal-alert.active .signal-beacon { animation: beacon-blink 1s infinite; color: var(--coral); }.ai-signal-alert div { display: grid; flex: 1; gap: 3px; }.ai-signal-alert strong { color: #2e5e29; font-family: var(--mono); font-size: 10px; font-weight: 500; text-transform: uppercase; }.ai-signal-alert small { color: #71906c; font-family: var(--mono); font-size: 8px; }.signal-arrow { color: #5b963f; font-size: 18px; }.ai-signal-alert.active .signal-arrow { color: var(--coral); }
